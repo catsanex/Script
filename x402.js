@@ -45,7 +45,7 @@ const schema = {
       },
       extra: {
         // ⭐ minta facilitator resmi: utamakan MERIT, fallback COINBASE
-        preferredFacilitator: "merit,coinbase",
+        preferredFacilitator: "merit,coinbase,default",
         chainId: "8453",
         tokenAddress: config.erc20Address,
         tokenDecimals: "18",
