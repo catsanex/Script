@@ -15,7 +15,7 @@ const schema = {
       asset: config.usdcAddress,           // USDC Base
       maxAmountRequired: "5",              // string (VALIDASI x402)
       payTo: config.payer,                 // wallet kamu
-      resource: "https://catsanex.up.railway.app//mint", // ganti setelah deploy (contoh: https://catsanex.up.railway.app/mint)
+      resource: "https://catsanex.up.railway.app/mint", // ganti setelah deploy (contoh: https://catsanex.up.railway.app/mint)
       description: "One-click mint on Base — pay 5 USDC and auto mint tokens",
       mimeType: "application/json; charset=utf-8",
       maxTimeoutSeconds: 600,              // number (OK)
