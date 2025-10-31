@@ -15,7 +15,6 @@ const TOKEN_ABI = ["function mint(address to, uint256 amount) public returns (bo
 const usdc = new ethers.Contract(USDC, ERC20_ABI, provider);
 const token = new ethers.Contract(config.erc20Address, TOKEN_ABI, wallet);
 
-// Verifikasi bahwa txHash adalah transfer 5 USDC → payTo (config.payer)
 async function verifyPaymentExact5USDCToPayee(txHash) {
   const receipt = await provider.getTransactionReceipt(txHash);
   if (!receipt || receipt.status !== 1) throw new Error("Invalid or unconfirmed transaction");
@@ -33,9 +32,8 @@ async function verifyPaymentExact5USDCToPayee(txHash) {
       const val = parsed.args.value;
 
       if (to === config.payer.toLowerCase() && val === required) {
-        // from = wallet user yg bayar
         const from = parsed.args.from;
-        return { payerFrom: from, amount: ethers.formatUnits(val, dec) };
+        return { from, amount: ethers.formatUnits(val, dec) };
       }
     } catch { /* skip non-USDC logs */ }
   }
@@ -44,45 +42,41 @@ async function verifyPaymentExact5USDCToPayee(txHash) {
 
 router.post("/", async (req, res) => {
   const paymentTx = req.headers["x-402-payment"];
-  const payer = req.headers["x-402-payer"]; // informasi dari facilitator (asal user)
+  const payerHeader = req.headers["x-402-payer"];
 
-  // Jika belum ada pembayaran → kembalikan 402 schema (untuk “manual call” / curl)
+  // Jika belum ada pembayaran (manual curl) → tampilkan schema 402 minimal
   if (!paymentTx) {
-    return res
-      .status(402)
-      .type("application/json; charset=utf-8")
-      .json({
-        x402Version: 1,
-        payer: config.payer,
-        accepts: [
-          {
-            scheme: "exact",
-            network: "base",
-            asset: USDC,
-            maxAmountRequired: "5",
-            payTo: config.payer,
-            resource: "https://catsanex.up.railway.app/mint",
-            description: "Pay 5 USDC then auto-mint tokens",
-            mimeType: "application/json; charset=utf-8",
-            maxTimeoutSeconds: 600,
-            // headerFields sudah didefinisikan di /api/x402; optional untuk echo disini
-          }
-        ]
-      });
+    return res.status(402).type("application/json; charset=utf-8").json({
+      x402Version: 1,
+      payer: config.payer,
+      accepts: [
+        {
+          scheme: "exact",
+          network: "base",
+          asset: USDC,
+          maxAmountRequired: "5",
+          payTo: config.payer,
+          resource: `${config.publicBaseUrl}/mint`,
+          description: "Pay 5 USDC then auto mint tokens",
+          mimeType: "application/json; charset=utf-8",
+          maxTimeoutSeconds: 600
+        }
+      ]
+    });
   }
 
   try {
     // 1) Verifikasi pembayaran 5 USDC ke payTo
-    const { payerFrom, amount } = await verifyPaymentExact5USDCToPayee(paymentTx);
+    const { from, amount } = await verifyPaymentExact5USDCToPayee(paymentTx);
 
-    // 2) Hitung jumlah mint (mis: 1 USDC → 200 token)
+    // 2) Hitung jumlah mint (contoh: 1 USDC → 200 token)
     const mintAmount = ethers.parseUnits(
       String(Number(amount) * config.mintPerUsdc),
       18
     );
 
-    // 3) Tujuan mint = si pembayar (prioritas: header x-402-payer, fallback ke log 'from')
-    const toAddress = (payer || payerFrom);
+    // 3) Tentukan penerima mint (prioritas header dari facilitator)
+    const toAddress = (payerHeader || from);
 
     // 4) Mint token
     const tx = await token.mint(toAddress, mintAmount);
@@ -102,9 +96,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET untuk cek cepat via browser
 router.get("/", (req, res) => {
-  res.send(`<h2>✅ Mint endpoint active</h2><p>Use <code>POST /mint</code> from X402Scan (Coinbase Facilitator).</p>`);
+  res.send(`<h2>✅ Mint endpoint active</h2><p>Use <code>POST /mint</code> from X402Scan.</p>`);
 });
 
 export default router;
