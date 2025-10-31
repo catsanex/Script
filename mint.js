@@ -7,7 +7,7 @@ const router = express.Router();
 const FACILITATOR_URL =
   process.env.FACILITATOR_URL || "https://facilitator.payai.network";
 const NETWORK = process.env.NETWORK || "base";
-const RECEIVER = process.env.RECEIVER || "0x62Ae4503A0430D94ACebF3C3427a940E85511111"; // your wallet
+const RECEIVER = process.env.RECEIVER || "0x4E021C6b12e2574ce786E6Eacc3B2f863B9bc941"; // your wallet
 const USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 
 // 🔹 Primary mint route (x402-compatible)
