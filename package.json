@@ -1,13 +1,38 @@
 {
-  "name": "x402-mint-base",
+  "name": "x402-mint-facilitator",
   "version": "1.0.0",
+  "description": "X402 Mint API integrated with Coinbase/PayAI Facilitator on Base Network",
+  "main": "index.js",
   "type": "module",
   "scripts": {
+    "dev": "nodemon index.js",
     "start": "node index.js"
   },
+  "keywords": [
+    "x402",
+    "coinbase",
+    "facilitator",
+    "payai",
+    "mint",
+    "usdc",
+    "base",
+    "express",
+    "railway"
+  ],
+  "author": "Sanex Labs",
+  "license": "MIT",
   "dependencies": {
-    "cors": "2.8.5",
-    "ethers": "6.15.0",
-    "express": "4.19.2"
+    "axios": "^1.7.4",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.15.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
