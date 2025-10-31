@@ -3,8 +3,6 @@ import { config } from "./config.js";
 
 const router = express.Router();
 
-// Schema ini yg dibaca X402Scan sebelum klik Fetch.
-// Coinbase Facilitator akan pakai field-field ini utk mengeksekusi pembayaran otomatis.
 const schema = {
   x402Version: 1,
   payer: config.payer,
@@ -12,19 +10,18 @@ const schema = {
     {
       scheme: "exact",
       network: "base",
-      asset: config.usdcAddress,           // USDC Base
-      maxAmountRequired: "5",              // string (VALIDASI x402)
-      payTo: config.payer,                 // wallet kamu
-      resource: "https://catsanex.up.railway.app/mint", // ganti setelah deploy (contoh: https://catsanex.up.railway.app/mint)
-      description: "One-click mint on Base — pay 5 USDC and auto mint tokens",
+      asset: config.usdcAddress,
+      maxAmountRequired: "5", // string (wajib)
+      payTo: config.payer,
+      resource: `${config.publicBaseUrl}/mint`, // callback paid action
+      description: "One-click mint on Base — pay 5 USDC then auto mint tokens",
       mimeType: "application/json; charset=utf-8",
-      maxTimeoutSeconds: 600,              // number (OK)
+      maxTimeoutSeconds: 600,  // number oke
       outputSchema: {
         input: {
           type: "http",
           method: "POST",
           bodyType: "json",
-          // Coinbase Facilitator akan mengirim header ini saat callback sesudah bayar
           headerFields: {
             "x-402-payment": {
               type: "string",
@@ -47,19 +44,24 @@ const schema = {
         }
       },
       extra: {
-        chainId: config.chainId,                 // string
+        // ⭐ minta facilitator resmi: utamakan MERIT, fallback COINBASE
+        preferredFacilitator: "merit,coinbase",
+        chainId: "8453",
         tokenAddress: config.erc20Address,
-        tokenDecimals: "18",                     // string agar aman utk validator
+        tokenDecimals: "18",
         symbol: "USDC",
         assetName: "USD Coin",
-        preferredFacilitator: "coinbase",        // ⭐ minta Coinbase Facilitator
-        implementation: "coinbase-facilitator"   // label informatif
+        implementation: "merit-or-coinbase-facilitator"
       }
     }
   ]
 };
 
-router.post("/", (req, res) => res.status(402).type("application/json; charset=utf-8").json(schema));
-router.get("/",  (req, res) => res.status(402).type("application/json; charset=utf-8").json(schema));
+router.post("/", (req, res) =>
+  res.status(402).type("application/json; charset=utf-8").json(schema)
+);
+router.get("/", (req, res) =>
+  res.status(402).type("application/json; charset=utf-8").json(schema)
+);
 
 export default router;
