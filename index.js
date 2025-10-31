@@ -10,11 +10,11 @@ app.use(express.json());
 app.use("/api/x402", x402Router);
 app.use("/mint", mintRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send(`<h2>✅ Sanex X402 API Live</h2>
-            <p>Schema: <code>POST /api/x402</code></p>
-            <p>Paid Action: <code>POST /mint</code> (callback by facilitator)</p>`);
+    <p>Schema: <code>POST /api/x402</code></p>
+    <p>Paid Action: <code>POST /mint</code></p>`);
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on :${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server :${PORT}`));
