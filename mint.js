@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
             asset: USDC,
             maxAmountRequired: "5",
             payTo: config.payer,
-            resource: "https://REPLACE_WITH_YOUR_DOMAIN/mint",
+            resource: "https://catsanex.up.railway.app//mint",
             description: "Pay 5 USDC then auto-mint tokens",
             mimeType: "application/json; charset=utf-8",
             maxTimeoutSeconds: 600,
