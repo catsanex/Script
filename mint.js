@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
             scheme: "exact",
             network: NETWORK,
             asset: USDC,
-            maxAmountRequired: "5",
+            maxAmountRequired: "0.01",
             payTo: RECEIVER,
             resource: `https://catsanex.up.railway.app/mint`,
             description: "Pay 5 USDC via facilitator to mint tokens automatically",
@@ -76,7 +76,7 @@ router.post("/", async (req, res) => {
     const verify = await axios.post(`${FACILITATOR_URL}/api/${NETWORK}/verify`, {
       txHash: paymentTx,
       expectedReceiver: RECEIVER,
-      expectedAmount: "5",
+      expectedAmount: "0.01",
       asset: USDC
     });
 
