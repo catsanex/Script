@@ -11,7 +11,7 @@ const schema = {
       scheme: "exact",
       network: "base",
       asset: config.usdcAddress,
-      maxAmountRequired: "5", // string (wajib)
+      maxAmountRequired: "0.01", // string (wajib)
       payTo: config.payer,
       resource: `${config.publicBaseUrl}/mint`, // callback paid action
       description: "One-click mint on Base — pay 5 USDC then auto mint tokens",
