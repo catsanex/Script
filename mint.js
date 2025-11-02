@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
             scheme: "exact",
             network: NETWORK,
             asset: USDC,
-            maxAmountRequired: "1",
+            maxAmountRequired: "5",
             payTo: RECEIVER,
             resource: `https://catsanex.up.railway.app/mint`,
             description: "Pay 5 USDC via facilitator to mint tokens automatically",
