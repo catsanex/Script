@@ -16,7 +16,7 @@ const schema = {
       resource: `${config.publicBaseUrl}/mint`, // callback paid action
       description: "One-click mint on Base — pay 5 USDC then auto mint tokens",
       mimeType: "application/json; charset=utf-8",
-      maxTimeoutSeconds: 600,  // number oke
+      maxTimeoutSeconds: 10,  // number oke
       outputSchema: {
         input: {
           type: "http",
