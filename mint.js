@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
             resource: `https://catsanex.up.railway.app/mint`,
             description: "Pay 5 USDC via facilitator to mint tokens automatically",
             mimeType: "application/json; charset=utf-8",
-            maxTimeoutSeconds: 600,
+            maxTimeoutSeconds: 10,
             outputSchema: {
               input: {
                 type: "http",
