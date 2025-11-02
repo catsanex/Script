@@ -17,7 +17,7 @@ app.use(
     PAY_TO,
     {
       "/mint": {
-        price: "$1", // user bayar 5 USDC
+        price: "$5", // user bayar 5 USDC
         network: NETWORK,
         description: "Pay 5 USDC then auto mint tokens on Base",
       },
