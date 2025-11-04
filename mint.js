@@ -10,7 +10,7 @@ const FACILITATOR_URL =
 const NETWORK = process.env.NETWORK || "base";
 const RECEIVER =
   process.env.RECEIVER ||
-  "0x4E021C6b12e2574ce786E6Eacc3B2f863B9bc941"; // your wallet
+  "0x4E021C6b12e2574ce786E6Eacc3B2f863B9bc941"; // wallet penerima mint
 const USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 
 // =============================================================
@@ -88,7 +88,7 @@ async function handleMint(req, res, mintAmount, usdcFee) {
       );
     }
 
-    // Step 2: Verify payment
+    // Step 2: Verify payment with facilitator
     const verify = await axios.post(`${FACILITATOR_URL}/api/${NETWORK}/verify`, {
       txHash: paymentTx,
       expectedReceiver: RECEIVER,
@@ -101,7 +101,7 @@ async function handleMint(req, res, mintAmount, usdcFee) {
 
     console.log(`✅ Facilitator verified ${payer} payment (${usdcFee} USDC)`);
 
-    // Step 3: Mock minting result
+    // Step 3: Simulate minting
     const mintTx = "0x" + crypto.randomUUID().replace(/-/g, "").slice(0, 64);
 
     return res.json({
@@ -119,10 +119,10 @@ async function handleMint(req, res, mintAmount, usdcFee) {
 }
 
 // =============================================================
-// 🔹 Routes
+// 🔹 API Routes
 // =============================================================
 
-// Default Mint (main)
+// Main mint (default)
 router.post("/", (req, res) => handleMint(req, res, 1000, 5));
 
 // Mint 1 NFT
@@ -131,7 +131,7 @@ router.post("/mint-1nft", (req, res) => handleMint(req, res, 1, 5));
 // Mint 10 NFT
 router.post("/mint-10nft", (req, res) => handleMint(req, res, 10, 50));
 
-// Minted percentage (dummy)
+// Check minted percentage (dummy)
 router.post("/minted-percent", (req, res) => {
   const mintedPercent = (Math.random() * 100).toFixed(2);
   res.json({
@@ -143,7 +143,7 @@ router.post("/minted-percent", (req, res) => {
 });
 
 // =============================================================
-// 🔹 UI Info Page (GET /)
+// 🔹 Web UI (GET /)
 // =============================================================
 router.get("/", (req, res) => {
   res.send(`
@@ -163,9 +163,7 @@ router.get("/", (req, res) => {
         padding: 30px;
         box-shadow: 0 6px 16px rgba(0,0,0,0.1);
       }
-      h2 {
-        color: #333;
-      }
+      h2 { color: #333; }
       code {
         background: #f1f1f1;
         padding: 2px 6px;
@@ -178,24 +176,20 @@ router.get("/", (req, res) => {
         padding: 10px 15px;
         margin-top: 10px;
       }
-      .steps {
-        margin-top: 20px;
-      }
-      .steps li {
-        margin-bottom: 8px;
-      }
+      .steps { margin-top: 20px; }
+      .steps li { margin-bottom: 8px; }
     </style>
 
     <div class="container">
       <h2>🪙 Sanex Mint — x402 Facilitator Integration</h2>
       <p>
         Selamat datang di halaman mint resmi <strong>Sanex Token</strong>!  
-        Gunakan integrasi <code>x402scan.com</code> untuk membayar mint fee secara otomatis melalui facilitator
-        (seperti <strong>PayAI</strong> atau <strong>Coinbase Facilitator</strong>).
+        Gunakan integrasi <code>x402scan.com</code> untuk membayar mint fee secara otomatis
+        melalui facilitator seperti <strong>PayAI</strong> atau <strong>Coinbase Facilitator</strong>.
       </p>
 
       <div class="note">
-        <strong>Deskripsi:</strong>  
+        <strong>Deskripsi:</strong><br>
         Bayar <b>5 USDC</b> untuk melakukan mint otomatis 1.000 token SANEX ke wallet Anda.  
         Proses ini sepenuhnya on-chain dan diverifikasi melalui jaringan <code>Base</code>.
       </div>
